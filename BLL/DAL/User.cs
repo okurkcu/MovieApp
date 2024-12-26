@@ -12,16 +12,17 @@ namespace BLL.DAL
         public int Id { get; set; }
 
 
-        [Required]
-        [StringLength(50)]
+        [Required(ErrorMessage = "Username is Required!")]
+        [StringLength(20, ErrorMessage ="Username must be maximum {1} characters")]
         public string UserName { get; set; }
 
 
-        [Required]
-        [StringLength(50)]
+        [Required(ErrorMessage = "{0} is Required!")]
+        [StringLength(10, ErrorMessage = "{0} must be maximum {1} characters")]
         public string Password { get; set; }
 
         public bool IsActive { get; set; }
+
 
         public int RoleId { get; set; }
 

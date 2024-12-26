@@ -17,7 +17,7 @@ namespace BLL.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.10")
+                .HasAnnotation("ProductVersion", "8.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -82,9 +82,10 @@ namespace BLL.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime?>("ReleaseDate")
+                        .IsRequired()
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal>("TotalRevenue")
+                    b.Property<decimal?>("TotalRevenue")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -127,8 +128,8 @@ namespace BLL.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.HasKey("Id");
 
@@ -148,16 +149,16 @@ namespace BLL.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
 

@@ -29,13 +29,16 @@ namespace BLL.Services
 
         public IQueryable<MoviesModel> Query()
         {
-            return _db.Movies.OrderByDescending(m => m.Name).ThenByDescending(m => m.ReleaseDate).Select(m => new MoviesModel() { Record = m });
+            return _db.Movies.Include(p => p.Director).Include(m =>  m.MovieGenres).ThenInclude(mg => mg.Genre).OrderByDescending(m => m.Name).ThenByDescending(m => m.ReleaseDate).ThenByDescending(m => m.Director.Name).Select(m => new MoviesModel() { Record = m });
         }
 
         public ServiceBase Create(Movie record)
         {
-            if (_db.Movies.Any(m => m.Name.ToLower() == record.Name.ToLower().Trim() && m.Director.Id == record.Director.Id && m.ReleaseDate == record.ReleaseDate))
+            if (_db.Movies.Any(m => m.Name.ToLower() == record.Name.ToLower().Trim() && m.DirectorId == record.DirectorId && m.ReleaseDate == record.ReleaseDate))
                 return Error("Movie with the same name, director and release date exist!");
+
+            if (record.TotalRevenue == null)
+                record.TotalRevenue = 0;
 
             record.Name = record.Name.Trim();
             _db.Movies.Add(record);
@@ -48,15 +51,18 @@ namespace BLL.Services
             if (_db.Movies.Any(m => m.Name.ToLower() == record.Name.ToLower().Trim() && m.Director == record.Director && m.ReleaseDate == record.ReleaseDate))
                 return Error("Movie with the same name, director and release date exist!");
 
-            var entity = _db.Movies.Find(record.Id);
+            //var entity = _db.Movies.Find(record.Id);
+            var entity = _db.Movies.Include(mg => mg.MovieGenres).SingleOrDefault(m => m.Id == record.Id);
 
             if (entity == null)
                 return Error("Movie cannot be found!");
 
+            _db.MovieGenres.RemoveRange(entity.MovieGenres);
             entity.Name = record.Name.Trim();
             entity.ReleaseDate = record.ReleaseDate;
             entity.TotalRevenue = record.TotalRevenue;
             entity.Director = record.Director;
+            entity.MovieGenres = record.MovieGenres;
             _db.Movies.Update(entity);
             _db.SaveChanges();
             return Success("Movie updated successfully!");
@@ -69,9 +75,10 @@ namespace BLL.Services
             if (entity == null)
                 return Error("Movie cannot be found!");
 
-            if (entity.MovieGenres.Any())
-                return Error("Movie has relational Movie Genres!");
+            //if (entity.MovieGenres.Any())
+            //    return Error("Movie has relational Movie Genres!");
 
+            _db.MovieGenres.RemoveRange(entity.MovieGenres);
             _db.Movies.Remove(entity);
             _db.SaveChanges();
             return Success("Movie has deleted successfully!");

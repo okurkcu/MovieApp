@@ -11,10 +11,10 @@ namespace BLL.DAL
         
         public int GenreId { get; set; }
 
-        [Required]
+        //[Required]
         public Movie Movie { get; set; }
 
-        [Required]
+        //[Required]
         public Genre Genre { get; set; }
     }
 }

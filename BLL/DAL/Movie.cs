@@ -23,7 +23,7 @@ namespace BLL.DAL
 
         public int DirectorId { get; set; }
 
-        [Required]
+        
         public Director Director { get; set; }
         public List<MovieGenre> MovieGenres { get; set; } = new List<MovieGenre>();
     }

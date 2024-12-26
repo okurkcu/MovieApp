@@ -15,7 +15,7 @@ namespace BLL.Models
 
         public string Password => Record.Password;
 
-        public string IsActive => Record.IsActive ? "Active" : "Inactive";
+        public string IsActive => Record.IsActive ? "Active" : "Not Active";
 
         public string Role => Record.Role?.Name;
     }

@@ -13,7 +13,7 @@ namespace BLL.DAL
 
 
         [Required]
-        [StringLength(50)]
+        [StringLength(10)]
         public string Name { get; set; }
 
         public List<User> Users { get; set; } = new List<User>();

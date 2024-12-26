@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,7 +16,10 @@ namespace BLL.Models
 
         public string Surname => Record.Surname;
 
+        [DisplayName("Is Retired")]
         public string IsRetired => Record.isRetired ? "Retired" : "Active";
+
+        public string nameSurname => Record.Name + " " + Record.Surname;
 
     }
 }

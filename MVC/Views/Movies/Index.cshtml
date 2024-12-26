@@ -51,25 +51,31 @@
                     </tr>
                 </thead>
                 <tbody>
-		            @foreach (var item in Model) {
-				        <tr>
-					        <td>
-						        @Html.DisplayFor(modelItem => item.Name)
-					        </td>
-					        <td>
-						        @Html.DisplayFor(modelItem => item.ReleaseDate)
-					        </td>
-					        <td>
-						        @Html.DisplayFor(modelItem => item.TotalRevenue)
-					        </td>
-					        <td>
-						        @Html.DisplayFor(modelItem => item.Director)
-					        </td>
-					        <td class="text-end w-25">
-						        <a asp-action="Details" asp-route-id="@item.Record.Id">Details</a>&nbsp;|&nbsp;
-						        <a asp-action="Edit" asp-route-id="@item.Record.Id">Edit</a>&nbsp;|&nbsp;
-						        <a asp-action="Delete" asp-route-id="@item.Record.Id">Delete</a>
-					        </td>
+                    @foreach (var item in Model) {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ReleaseDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TotalRevenue)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Director)
+                            </td>
+                            <td class="text-end w-25">
+                                @if (User.Identity.IsAuthenticated) {
+                                    <a asp-action="Add" asd-controller="Favorites" asp-route-movieId="@item.Record.Id">Add to Favorites</a>@:&nbsp;| &nbsp;
+                                    <a asp-action="Details" asp-route-id="@item.Record.Id">Details</a>@:&nbsp;| &nbsp;
+                                    if (User.IsInRole("Admin"))
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@item.Record.Id">Edit</a>@:&nbsp;| &nbsp;
+                                        <a asp-action="Delete" asp-route-id="@item.Record.Id">Delete</a>
+                                    }
+                                }
+                            </td>
 				        </tr>
 		            }
                 </tbody>

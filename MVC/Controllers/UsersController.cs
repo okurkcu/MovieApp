@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using BLL.Controllers.Bases;
 using BLL.Services;
 using BLL.Models;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 
 // Generated from Custom Template.
 
@@ -33,11 +36,44 @@ namespace MVC.Controllers
         }
 
         // GET: Users
-        public IActionResult Index()
+        public IActionResult Login()
         {
             // Get collection service logic:
-            var list = _userService.Query().ToList();
-            return View(list);
+            //var list = _userService.Query().ToList();
+            return View();
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+
+        public async Task<IActionResult> Login(UsersModel users)
+        {
+            if (ModelState.IsValid)
+            {
+                var userModel = _userService.Query().SingleOrDefault(u => u.Record.UserName == users.Record.UserName && u.Record.Password == users.Record.Password && u.Record.IsActive);
+                if(userModel is not null)
+                {
+                    List<Claim> claims = new List<Claim>()
+                    {
+                        new Claim(ClaimTypes.Name, userModel.UserName),
+                        new Claim(ClaimTypes.Role, userModel.Role),
+                        new Claim("Id", userModel.Record.Id.ToString())
+                    };
+                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    var principle = new ClaimsPrincipal(identity);
+                    await HttpContext.SignInAsync(principle, new AuthenticationProperties()
+                    {
+                        IsPersistent = true
+                    });
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            return View();
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Index", "Home");
         }
 
         // GET: Users/Details/5
